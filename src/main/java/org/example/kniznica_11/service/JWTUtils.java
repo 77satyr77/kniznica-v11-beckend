@@ -17,13 +17,13 @@ import java.util.function.Function;
 @Component
 public class JWTUtils {
 
-    private SecretKey Key;
+    private SecretKey SECRET_KEY;
     private static final long EXPIRATION_TIME = TimeUnit.MINUTES.toMillis(30);
 
     public JWTUtils() {
         String keyString = "310B120B0BFD37D402A08745DB60C776A1CD7068BA2E36CBCD8D9D22C3B5439D";
         byte[] keyBytes = Base64.getDecoder().decode(keyString.getBytes(StandardCharsets.UTF_8));
-        this.Key = new SecretKeySpec(keyBytes, "HmacSHA256");
+        this.SECRET_KEY = new SecretKeySpec(keyBytes, "HmacSHA256");
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -31,7 +31,7 @@ public class JWTUtils {
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+EXPIRATION_TIME))
-                .signWith(Key)
+                .signWith(SECRET_KEY)
                 .compact();
     }
 
@@ -41,7 +41,7 @@ public class JWTUtils {
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+EXPIRATION_TIME))
-                .signWith(Key)
+                .signWith(SECRET_KEY)
                 .compact();
     }
 
@@ -50,7 +50,7 @@ public class JWTUtils {
     }
 
     private <T> T extractClaims(String token, Function<Claims, T> claimsTFunction){
-        return claimsTFunction.apply(Jwts.parser().verifyWith(Key).build().parseSignedClaims(token).getPayload());
+        return claimsTFunction.apply(Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token).getPayload());
     }
 
     public  boolean isTokenValid(String token, UserDetails userDetails){

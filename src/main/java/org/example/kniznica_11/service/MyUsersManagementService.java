@@ -67,11 +67,11 @@ public class MyUsersManagementService {
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
             var user = usersRepository.findByLoginName(loginRequest.getUsername()).orElseThrow();
             var jwt = jwtUtils.generateToken(user);
-            //var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(),user);
+            var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(),user);
             resp.setStatusCode(200);
             resp.setToken(jwt);
             resp.setRole(user.getRole().toUpperCase());
-            //resp.setRefreshToken(refreshToken);
+            resp.setRefreshToken(refreshToken);
             resp.setExpirationTime("24Hrs");
             resp.setMessage("Úspešne ste sa prihlásili");
 
